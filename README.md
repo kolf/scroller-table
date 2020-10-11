@@ -1,4 +1,4 @@
-# scroll-table
+# scroller-tablee
 
 ## Project setup
 ```
