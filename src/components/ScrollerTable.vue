@@ -8,9 +8,15 @@
             <p
               v-for="item in getColumnList(true)"
               :key="item.field"
+              @click="
+                filterField === item.field
+                  ? onFilterPikerShow(item.field)
+                  : null
+              "
               class="col"
             >
               {{ item.title }}
+              <span class="filter__button" v-if="filterField === item.field" />
             </p>
           </div>
           <div class="table__fixed-right">
@@ -36,7 +42,7 @@
           </div>
         </div>
       </div>
-      <div class="table__body" :style="{ height: bodyHeight + 'px' }">
+      <div class="table__body" :style="{ maxHeight: bodyHeight + 'px' }">
         <div :style="{ height: fixedData.length * 36 + 'px', display: 'flex' }">
           <div class="table__fixed-left">
             <div v-for="(item, i) in fixedData" :key="i" class="row">
@@ -91,6 +97,14 @@
         </div>
       </div>
     </div>
+    <van-picker
+      v-if="showFilterPiker"
+      show-toolbar
+      :columns="filterOptions"
+      @confirm="confirmFilterPiker"
+      @cancel="hideFilterPiker"
+      class="picker__root"
+    />
   </div>
 </template>
 
@@ -101,6 +115,7 @@ export default {
     title: String,
     columns: Array,
     dataSource: Array,
+    filterField: String,
     bodyHeight: {
       type: Number,
       default() {
@@ -109,9 +124,20 @@ export default {
     },
   },
   data() {
-    return {};
+    return {
+      filterValue: "",
+      showFilterPiker: false,
+    };
   },
   methods: {
+    getData() {
+      if (!this.filterValue || this.filterValue === "全部") {
+        return this.dataSource;
+      }
+      return this.dataSource.filter((item) => {
+        return item[this.filterField] === this.filterValue;
+      });
+    },
     getColumnList(fixed) {
       return this.columns.filter((item) => item.fixed === fixed);
     },
@@ -121,25 +147,47 @@ export default {
       this.$refs.bodyRight.scrollLeft = scrollLeft;
       this.$refs.footerRight.scrollLeft = scrollLeft;
     },
+    onFilterPikerShow() {
+      this.showFilterPiker = true;
+    },
+    hideFilterPiker() {
+      this.showFilterPiker = false;
+    },
+    confirmFilterPiker(value) {
+      this.filterValue = value;
+      this.hideFilterPiker();
+    },
   },
   computed: {
     autoData() {
-      return this.dataSource.reduce((result, item) => {
+      return this.getData().reduce((result, item) => {
         return [...result, this.getColumnList().map((c) => item[c.field])];
       }, []);
     },
     fixedData() {
-      return this.dataSource.reduce((result, item) => {
+      return this.getData().reduce((result, item) => {
         return [...result, this.getColumnList(true).map((c) => item[c.field])];
       }, []);
     },
     footerData() {
       return this.getColumnList().map((c) => {
-        return this.dataSource.reduce((result, item) => {
+        return this.getData().reduce((result, item) => {
           result += Number.isInteger(item[c.field]) ? item[c.field] * 1 : 0;
           return result;
         }, 0);
       });
+    },
+    filterOptions() {
+      // let options = ["全部"];
+      return this.dataSource.reduce(
+        (result, item) => {
+          if (!result.includes(item[this.filterField])) {
+            result.push(item[this.filterField]);
+          }
+          return result;
+        },
+        ["全部"]
+      );
     },
   },
 };
@@ -206,7 +254,26 @@ export default {
   width: 72px;
   display: inline-block;
   overflow: hidden;
+  position: relative;
   // padding: 4px;
   // border-right: 1px solid #ccc;
+}
+.picker {
+  &__root {
+    position: fixed;
+    width: 100%;
+    bottom: 0;
+  }
+}
+.filter__button {
+  position: absolute;
+  top: 50%;
+  margin-top: -5px;
+  margin-left: 3px;
+  border: 3px solid;
+  border-color: transparent transparent #fff #fff;
+  -webkit-transform: rotate(-45deg);
+  transform: rotate(-45deg);
+  opacity: 0.8;
 }
 </style>

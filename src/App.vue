@@ -2,6 +2,7 @@
   <div id="app">
     <ScrollerTable
       title="营业区期交（季度&年度)"
+      filterField="BRANCH_NAME"
       :columns="columns"
       :dataSource="dataSource"
     />
