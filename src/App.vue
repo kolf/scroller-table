@@ -22,7 +22,7 @@ export default {
     return {
       columns: [
         {
-          title: "期交排行",
+          title: "期交</br>排行",
           field: "INDEX",
           fixed: true,
         },
@@ -36,7 +36,7 @@ export default {
           field: "AGENT_STATUS",
         },
         {
-          title: "月度期交",
+          title: "月度</br>期交",
           field: "D_UNDERWRITE_PREMIUM",
         },
         {
@@ -44,7 +44,7 @@ export default {
           field: "M_UNDERWRITE_PREMIUM",
         },
         {
-          title: "月度达成",
+          title: "月度</br>达成",
           field: "Q_UNDERWRITE_PREMIUM",
         },
         {

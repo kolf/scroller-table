@@ -15,8 +15,8 @@
               "
               class="col"
             >
-              {{ item.title }}
-              <span class="filter__button" v-if="filterField === item.field" />
+              <span v-html="item.title" />
+              <i class="filter__button" v-if="filterField === item.field" />
             </p>
           </div>
           <div class="table__fixed-right">
@@ -35,7 +35,7 @@
                   :key="item.field"
                   class="col"
                 >
-                  {{ item.title }}
+                  <span v-html="item.title" class="table__header-row--title" />
                 </p>
               </div>
             </div>
@@ -47,7 +47,7 @@
           <div class="table__fixed-left">
             <div v-for="(item, i) in fixedData" :key="i" class="row">
               <p v-for="(f, j) in item" :key="j" class="col">
-                {{ item[j] || "---" }}
+                <span> {{ item[j] || "---" }}</span>
               </p>
             </div>
           </div>
@@ -64,7 +64,7 @@
               >
                 <div v-for="(item, i) in autoData" :key="i" class="row">
                   <p v-for="(f, j) in item" :key="j" class="col">
-                    {{ item[j] || "---" }}
+                    <span> {{ item[j] || "---" }}</span>
                   </p>
                 </div>
               </div>
@@ -75,7 +75,7 @@
       <div class="table__footer">
         <div class="table__fixed-left">
           <div class="row">
-            <p class="col" style="width: 100%">合计</p>
+            <p class="col" style="width: 100%"><span>合计</span></p>
           </div>
         </div>
         <div class="table__fixed-right">
@@ -90,7 +90,7 @@
               }"
             >
               <p v-for="(item, i) in footerData" :key="i" class="col">
-                {{ item }}
+                <span> {{ item }}</span>
               </p>
             </div>
           </div>
@@ -194,7 +194,7 @@ export default {
 </script>
 
 <!-- Add "scoped" attribute to limit CSS to this component only -->
-<style scoped lang='scss'>
+<style scoped lang="scss">
 * {
   margin: 0;
   padding: 0;
@@ -214,12 +214,13 @@ export default {
     color: #fff;
   }
   &__header {
-    height: 72px;
     &-row {
       background: #3b90f4;
       color: #fff;
       display: flex;
-      height: 36px;
+      .col{
+        height: 48px;
+      }
     }
   }
   &__fixed {
@@ -252,11 +253,14 @@ export default {
   height: 36px;
   font-size: 12px;
   width: 72px;
-  display: inline-block;
+  display: flex;
   overflow: hidden;
-  position: relative;
-  // padding: 4px;
-  // border-right: 1px solid #ccc;
+  text-align: center;
+  float: left;
+  & > * {
+    margin: auto;
+    line-height: 1.2;
+  }
 }
 .picker {
   &__root {
@@ -266,13 +270,11 @@ export default {
   }
 }
 .filter__button {
-  position: absolute;
-  top: 50%;
-  margin-top: -5px;
-  margin-left: 3px;
+  position: relative;
+  left: -6px;
+  top: -2px;
   border: 3px solid;
   border-color: transparent transparent #fff #fff;
-  -webkit-transform: rotate(-45deg);
   transform: rotate(-45deg);
   opacity: 0.8;
 }
