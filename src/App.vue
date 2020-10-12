@@ -3,7 +3,7 @@
     <ScrollerTable
       title="营业区期交（季度&年度)"
       filter-field="BRANCH_NAME"
-      v-on:change="onFilter"
+      @filter="onFilter"
       :body-height="320"
       :columns="columns"
       :data-source="dataSource"
@@ -59,13 +59,16 @@ export default {
         ...item,
         INDEX: index + 1,
       })),
-      footerData: ["32%", 1, 2, 3, 4, 5],//首次计算好的合计
+      footerData: this.makeFooterData(), //首次计算好的合计
     };
   },
   methods: {
-    onFilter(selectedValue) {
-      console.log(selectedValue, "选中的筛选项");
-      this.footerData = [1, "10%", 2, 3, 4, 5]; //筛选全重新计算合计
+    onFilter(filterField, filterValue) {
+      this.footerData = this.makeFooterData(filterField, filterValue); //筛选全重新计算合计
+    },
+    makeFooterData(filterField, filterValue) {
+      console.log(filterField, filterValue, "通过选中的字段和值计算新的合计");
+      return ["3%", "111", 2, 3, 4, 5];
     },
   },
 };

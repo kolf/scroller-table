@@ -176,8 +176,7 @@ export default {
     confirmFilterPiker(value) {
       this.filterValue = value;
       this.hideFilterPiker();
-      console.log("change");
-      this.$emit("change", value);
+      this.$emit("filter", this.filterField, this.filterValue);
     },
   },
   computed: {
@@ -200,7 +199,6 @@ export default {
     //   });
     // },
     filterOptions() {
-      // let options = ["全部"];
       return this.dataSource.reduce(
         (result, item) => {
           if (!result.includes(item[this.filterField])) {
