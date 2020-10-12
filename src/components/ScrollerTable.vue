@@ -36,9 +36,15 @@
                 <p
                   v-for="item in getColumnList()"
                   :key="item.field"
+                  @click="
+                    filterField === item.field
+                      ? onFilterPikerShow(item.field)
+                      : null
+                  "
                   class="col"
                 >
                   <span v-html="item.title" class="table__header-row--title" />
+                  <i class="filter__button" v-if="filterField === item.field" />
                 </p>
               </div>
             </div>
