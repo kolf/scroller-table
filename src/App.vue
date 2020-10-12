@@ -2,9 +2,12 @@
   <div id="app">
     <ScrollerTable
       title="营业区期交（季度&年度)"
-      filterField="D_UNDERWRITE_PREMIUM"
+      filter-field="BRANCH_NAME"
+      v-on:change="onFilter"
+      :body-height="320"
       :columns="columns"
-      :dataSource="dataSource"
+      :data-source="dataSource"
+      :footer-data="footerData"
     />
   </div>
 </template>
@@ -34,7 +37,6 @@ export default {
         {
           title: "营业区",
           field: "AGENT_STATUS",
-          fixed: true,
         },
         {
           title: "月度</br>期交",
@@ -57,7 +59,14 @@ export default {
         ...item,
         INDEX: index + 1,
       })),
+      footerData: ["32%", 1, 2, 3, 4, 5],//首次计算好的合计
     };
+  },
+  methods: {
+    onFilter(selectedValue) {
+      console.log(selectedValue, "选中的筛选项");
+      this.footerData = [1, "10%", 2, 3, 4, 5]; //筛选全重新计算合计
+    },
   },
 };
 </script>

@@ -18,8 +18,10 @@
               "
               class="col"
             >
-              <span v-html="item.title" />
-              <i class="filter__button" v-if="filterField === item.field" />
+              
+              <span v-html="item.title" v-if="!item.children"/>
+              <div></div>
+              <!-- <i class="filter__button" v-if="filterField === item.field" /> -->
             </p>
           </div>
           <div class="table__fixed-right">
@@ -134,7 +136,6 @@ export default {
     title: String,
     columns: Array,
     dataSource: Array,
-    footerData: Array,
     filterField: String,
     bodyHeight: {
       type: Number,
@@ -159,7 +160,16 @@ export default {
       });
     },
     getColumnList(fixed) {
-      return this.columns.filter((item) => item.fixed === fixed);
+      return this.columns
+        .filter((item) => (fixed ? item.fixed : !item.fixed))
+        .reduce((result, item) => {
+          if (item.children) {
+            result = [...result, ...item.children];
+          } else {
+            result.push(item);
+          }
+          return result;
+        }, []);
     },
     handleScroll(e) {
       const scrollLeft = e.target.scrollLeft;
@@ -176,8 +186,6 @@ export default {
     confirmFilterPiker(value) {
       this.filterValue = value;
       this.hideFilterPiker();
-      console.log("change");
-      this.$emit("change", value);
     },
   },
   computed: {
@@ -191,14 +199,14 @@ export default {
         return [...result, this.getColumnList(true).map((c) => item[c.field])];
       }, []);
     },
-    // footerData() {
-    //   return this.getColumnList().map((c) => {
-    //     return this.getData().reduce((result, item) => {
-    //       result += Number.isInteger(item[c.field]) ? item[c.field] * 1 : 0;
-    //       return result;
-    //     }, 0);
-    //   });
-    // },
+    footerData() {
+      return this.getColumnList().map((c) => {
+        return this.getData().reduce((result, item) => {
+          result += Number.isInteger(item[c.field]) ? item[c.field] * 1 : 0;
+          return result;
+        }, 0);
+      });
+    },
     filterOptions() {
       // let options = ["全部"];
       return this.dataSource.reduce(
