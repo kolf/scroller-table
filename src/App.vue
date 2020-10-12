@@ -34,6 +34,7 @@ export default {
         {
           title: "营业区",
           field: "AGENT_STATUS",
+          fixed: true,
         },
         {
           title: "月度</br>期交",

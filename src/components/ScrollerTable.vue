@@ -4,7 +4,10 @@
       <div class="table__header">
         <div class="table__title">{{ title }}</div>
         <div class="table__header-row">
-          <div class="table__fixed-left">
+          <div
+            class="table__fixed-left"
+            :style="{ width: getColumnList(true).length * 72 + 'px' }"
+          >
             <p
               v-for="item in getColumnList(true)"
               :key="item.field"
@@ -44,7 +47,10 @@
       </div>
       <div class="table__body" :style="{ maxHeight: bodyHeight + 'px' }">
         <div :style="{ height: fixedData.length * 36 + 'px', display: 'flex' }">
-          <div class="table__fixed-left">
+          <div
+            class="table__fixed-left"
+            :style="{ width: getColumnList(true).length * 72 + 'px' }"
+          >
             <div v-for="(item, i) in fixedData" :key="i" class="row">
               <p v-for="(f, j) in item" :key="j" class="col">
                 <span> {{ item[j] || "---" }}</span>
@@ -75,7 +81,14 @@
       <div class="table__footer">
         <div class="table__fixed-left">
           <div class="row">
-            <p class="col" style="width: 100%"><span>合计</span></p>
+            <p
+              class="col"
+              :style="{
+                width: getColumnList(true).length * 72 + 'px',
+              }"
+            >
+              <span>合计</span>
+            </p>
           </div>
         </div>
         <div class="table__fixed-right">
@@ -218,14 +231,13 @@ export default {
       background: #3b90f4;
       color: #fff;
       display: flex;
-      .col{
+      .col {
         height: 48px;
       }
     }
   }
   &__fixed {
     &-left {
-      width: 144px;
       overflow: hidden;
     }
     &-right {
