@@ -59,7 +59,7 @@
           >
             <div v-for="(item, i) in fixedData" :key="i" class="row">
               <p v-for="(f, j) in item" :key="j" class="col">
-                <span> {{ item[j] || "---" }}</span>
+                <span v-html="item[j]" />
               </p>
             </div>
           </div>
@@ -76,7 +76,7 @@
               >
                 <div v-for="(item, i) in autoData" :key="i" class="row">
                   <p v-for="(f, j) in item" :key="j" class="col">
-                    <span> {{ item[j] || "---" }}</span>
+                    <span v-html="item[j]" />
                   </p>
                 </div>
               </div>
@@ -109,7 +109,7 @@
               }"
             >
               <p v-for="(item, i) in footerData" :key="i" class="col">
-                <span> {{ item }}</span>
+                <span v-html="item" />
               </p>
             </div>
           </div>
@@ -182,12 +182,24 @@ export default {
   computed: {
     autoData() {
       return this.getData().reduce((result, item) => {
-        return [...result, this.getColumnList().map((c) => item[c.field])];
+        return [
+          ...result,
+          this.getColumnList().map((c) => {
+            const value = item[c.field];
+            return c.render ? c.render(value, item) : value;
+          }),
+        ];
       }, []);
     },
     fixedData() {
       return this.getData().reduce((result, item) => {
-        return [...result, this.getColumnList(true).map((c) => item[c.field])];
+        return [
+          ...result,
+          this.getColumnList(true).map((c) => {
+            const value = item[c.field];
+            return c.render ? c.render(value, item) : value;
+          }),
+        ];
       }, []);
     },
     // footerData() {

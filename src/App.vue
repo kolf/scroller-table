@@ -33,6 +33,13 @@ export default {
           title: "支公司",
           field: "BRANCH_NAME",
           fixed: true,
+          render(text, record) {
+            if (text === "一支") {
+              return `<i style='color:#f00'>${text}</i>`;
+            }
+            console.log(text, record, 'record')
+            return text;
+          },
         },
         {
           title: "营业区",
