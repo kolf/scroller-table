@@ -4,7 +4,7 @@
       title="营业区期交（季度&年度)"
       filter-field="BRANCH_NAME"
       @filter="onFilter"
-      :data-level='2'
+      :data-level='3'
       :body-height="320"
       :columns="columns"
       :data-source="dataSource"
@@ -57,6 +57,14 @@ export default {
             {
               title: "月度目标",
               field: "M_UNDERWRITE_PREMIUM",
+              children: [{
+          title: "月度目标",
+          field: "M_UNDERWRITE_PREMIUM",
+        },
+        {
+          title: "月度达成",
+          field: "Q_UNDERWRITE_PREMIUM",
+        },]
             },
           ],
         },
@@ -71,10 +79,7 @@ export default {
             {
               title: "月度目标",
               field: "Y_UNDERWRITE_PREMIUM",
-            },
-          ],
-        },
-        {
+            },      {
           title: "月度</br>期交",
           field: "D_UNDERWRITE_PREMIUM",
         },
@@ -85,6 +90,8 @@ export default {
         {
           title: "月度</br>达成",
           field: "Q_UNDERWRITE_PREMIUM",
+        },
+          ],
         },
         {
           title: "年度期交",

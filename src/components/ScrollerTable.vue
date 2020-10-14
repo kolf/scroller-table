@@ -53,8 +53,19 @@
                   <template v-else>
                     <div>
                       <span v-html="item.title" class='col__children-title'/>
-                      <div class='row'><p v-for='c in item.children' :key="c.field" class='col' :style="{width: 71+'px'}"><span v-html="c.title"/>
-                      <i class="filter__button" v-if="filterField === c.field" /></p></div>
+                      <div class='row' :style="{height:dataLevel>1? headerRowHeight-24+'px': '36px' }"><p v-for='c in item.children' :key="c.field" class='col' :style="{width: (getChildList(c.children).length || 1)*71+1+'px'}">
+                        <template v-if='!c.children'>
+                          <span v-html="c.title"/>
+                          <i class="filter__button" v-if="filterField === c.field" />
+                        </template>
+                        <template v-else>
+                            <div>
+                      <span v-html="c.title" class='col__children-title'/>
+                      <div class='row'><p v-for='cc in c.children' :key="cc.field" class='col' :style="{width: 71+'px'}"><span v-html="cc.title"/>
+                          <i class="filter__button" v-if="filterField === cc.field" /></p></div>
+                      </div>
+                        </template>
+                      </p></div>
                     </div>
                   </template>
                 </p>
@@ -263,7 +274,7 @@ export default {
       if(this.dataLevel===1){
         return 48
       }
-      return (36+24)*(this.dataLevel-1)
+      return 24*(this.dataLevel-1)+36
     }
   },
 };
