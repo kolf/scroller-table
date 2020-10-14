@@ -4,6 +4,7 @@
       title="营业区期交（季度&年度)"
       filter-field="BRANCH_NAME"
       @filter="onFilter"
+      :data-level='2'
       :body-height="320"
       :columns="columns"
       :data-source="dataSource"
@@ -37,13 +38,41 @@ export default {
             if (text === "一支") {
               return `<i style='color:#f00'>${text}</i>`;
             }
-            console.log(text, record, 'record')
+            console.log(text, record, "record");
             return text;
           },
         },
         {
           title: "营业区",
           field: "AGENT_STATUS",
+        },
+        {
+          title: "月度承保",
+          field: "Y11111",
+          children: [
+            {
+              title: "月度</br>期交",
+              field: "D_UNDERWRITE_PREMIUM",
+            },
+            {
+              title: "月度目标",
+              field: "M_UNDERWRITE_PREMIUM",
+            },
+          ],
+        },
+        {
+          title: "月度环比",
+          field: "Y11112",
+          children: [
+            {
+              title: "月度</br>期交",
+              field: "Q_UNDERWRITE_PREMIUM",
+            },
+            {
+              title: "月度目标",
+              field: "Y_UNDERWRITE_PREMIUM",
+            },
+          ],
         },
         {
           title: "月度</br>期交",
@@ -75,7 +104,15 @@ export default {
     },
     makeFooterData(filterField, filterValue) {
       console.log(filterField, filterValue, "通过选中的字段和值计算新的合计");
-      return ["3%", "111", 2, 3, 4, 5];
+      return [
+        "3%",
+        "111",
+        {
+          //可传对象
+          text: "90个",
+          width: 72 * 3 + "px",
+        },
+      ];
     },
   },
 };
