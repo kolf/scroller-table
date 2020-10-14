@@ -294,14 +294,15 @@ export default {
       background: #3b90f4;
       color: #fff;
       display: flex;
-      .col {
-        // height: 48px;
-      }
+
     }
   }
   &__fixed {
     &-left {
       overflow: hidden;
+      .col {
+       border-right: 1px solid #eee !important;
+      }
     }
     &-right {
       flex: 1;
