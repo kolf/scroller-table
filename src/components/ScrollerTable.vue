@@ -29,14 +29,14 @@
               ref="headerRight"
             >
               <div
-                class='row'
+                class="row"
                 :style="{
                   width: getColumnList(false, true).length * 72 + 'px',
-                  height: headerRowHeight + 'px'
+                  height: headerRowHeight + 'px',
                 }"
               >
                 <p
-                  v-for="item in getColumnList(false,false)"
+                  v-for="item in getColumnList(false, false)"
                   :key="item.field"
                   @click="
                     filterField === item.field
@@ -44,28 +44,71 @@
                       : null
                   "
                   class="col"
-                  :style="{width: (getChildList(item.children).length || 1)*72+'px'}"
+                  :style="{
+                    width:
+                      (getChildList(item.children).length || 1) * 72 + 'px',
+                  }"
                 >
                   <template v-if="!item.children">
-                    <span v-html="item.title"/>
-                    <i class="filter__button" v-if="filterField === item.field" />
+                    <span v-html="item.title" />
+                    <i
+                      class="filter__button"
+                      v-if="filterField === item.field"
+                    />
                   </template>
                   <template v-else>
                     <div>
-                      <span v-html="item.title" class='col__children-title'/>
-                      <div class='row' :style="{height:dataLevel>1? headerRowHeight-24+'px': '36px' }"><p v-for='c in item.children' :key="c.field" class='col' :style="{width: (getChildList(c.children).length || 1)*71+'px'}">
-                        <template v-if='!c.children'>
-                          <span v-html="c.title"/>
-                          <i class="filter__button" v-if="filterField === c.field" />
-                        </template>
-                        <template v-else>
+                      <span v-html="item.title" class="col__children-title" />
+                      <div
+                        class="row"
+                        :style="{
+                          height:
+                            dataLevel > 1
+                              ? headerRowHeight - 24 + 'px'
+                              : '36px',
+                        }"
+                      >
+                        <p
+                          v-for="c in item.children"
+                          :key="c.field"
+                          class="col"
+                          :style="{
+                            width:
+                              (getChildList(c.children).length || 1) * 71 +
+                              'px',
+                          }"
+                        >
+                          <template v-if="!c.children">
+                            <span v-html="c.title" />
+                            <i
+                              class="filter__button"
+                              v-if="filterField === c.field"
+                            />
+                          </template>
+                          <template v-else>
                             <div>
-                      <span v-html="c.title" class='col__children-title'/>
-                      <div class='row'><p v-for='cc in c.children' :key="cc.field" class='col' :style="{width: 71+'px'}"><span v-html="cc.title"/>
-                          <i class="filter__button" v-if="filterField === cc.field" /></p></div>
+                              <span
+                                v-html="c.title"
+                                class="col__children-title"
+                              />
+                              <div class="row">
+                                <p
+                                  v-for="cc in c.children"
+                                  :key="cc.field"
+                                  class="col"
+                                  :style="{ width: 71 + 'px' }"
+                                >
+                                  <span v-html="cc.title" />
+                                  <i
+                                    class="filter__button"
+                                    v-if="filterField === cc.field"
+                                  />
+                                </p>
+                              </div>
+                            </div>
+                          </template>
+                        </p>
                       </div>
-                        </template>
-                      </p></div>
                     </div>
                   </template>
                 </p>
@@ -75,12 +118,17 @@
         </div>
       </div>
       <div class="table__body" :style="{ maxHeight: bodyHeight + 'px' }">
-        <div :style="{ height: fixedData.length * 36 + 'px', display: 'flex' }">
+        <div :style="{ display: 'flex' }">
           <div
             class="table__fixed-left"
             :style="{ width: getColumnList(true, true).length * 72 + 'px' }"
           >
-            <div v-for="(item, i) in fixedData" :key="i" class="row">
+            <div
+              v-for="(item, i) in fixedData"
+              :key="i"
+              class="row"
+              :style="{ height: getRowMaxHeight(autoData[i])+'px' }"
+            >
               <p v-for="(f, j) in item" :key="j" class="col">
                 <span v-html="item[j]" />
               </p>
@@ -97,7 +145,12 @@
                   width: getColumnList(false, true).length * 72 + 'px',
                 }"
               >
-                <div v-for="(item, i) in autoData" :key="i" class="row">
+                <div
+                  v-for="(item, i) in autoData"
+                  :key="i"
+                  class="row"
+                  :style="{ height: getRowMaxHeight(item)+'px' }"
+                >
                   <p v-for="(f, j) in item" :key="j" class="col">
                     <span v-html="item[j]" />
                   </p>
@@ -127,7 +180,7 @@
             ref="footerRight"
           >
             <div
-              class='row'
+              class="row"
               :style="{
                 width: getColumnList(false, true).length * 72 + 'px',
               }"
@@ -157,7 +210,6 @@
 </template>
 
 <script>
-
 export default {
   name: "ScrollerTable",
   props: {
@@ -166,7 +218,7 @@ export default {
     dataSource: Array,
     footerData: Array,
     filterField: String,
-    dataLevel:{
+    dataLevel: {
       type: Number,
       default() {
         return 48;
@@ -194,29 +246,31 @@ export default {
         return item[this.filterField] === this.filterValue;
       });
     },
-     getChildList(root) {
+    getChildList(root) {
       let result = [];
       loop(root);
       return result;
-      function loop(data){
-        if(!data){
-          return []
+      function loop(data) {
+        if (!data) {
+          return [];
         }
-        for(let item of data){
-          if(item.children){
-            loop(item.children)
-          }else{
-            result.push(item)
+        for (let item of data) {
+          if (item.children) {
+            loop(item.children);
+          } else {
+            result.push(item);
           }
         }
       }
     },
     getColumnList(fixed, isChildList) {
-      let result = this.columns.filter((item) => (item.fixed || false) === fixed)
-      if(isChildList){
-         return this.getChildList(result);
+      let result = this.columns.filter(
+        (item) => (item.fixed || false) === fixed
+      );
+      if (isChildList) {
+        return this.getChildList(result);
       }
-      return result
+      return result;
     },
     handleScroll(e) {
       const scrollLeft = e.target.scrollLeft;
@@ -235,26 +289,37 @@ export default {
       this.hideFilterPiker();
       this.$emit("filter", this.filterField, this.filterValue);
     },
+    getRowMaxHeight(data) {
+      let max = 36;
+      for (let item of data) {
+        console.log(item, "item");
+        const matchData = (item || "").match(/<div height='(\d+)/);
+        if (matchData && matchData[1] > max) {
+          max = matchData[1];
+        }
+      }
+      return max;
+    },
   },
   computed: {
     autoData() {
-      return this.getData().reduce((result, item) => {
+      return this.getData().reduce((result, item, index) => {
         return [
           ...result,
           this.getColumnList(false, true).map((c) => {
             const value = item[c.field];
-            return c.render ? c.render(value, item) : value;
+            return c.render ? c.render(value, item, index) : value;
           }),
         ];
       }, []);
     },
     fixedData() {
-      return this.getData().reduce((result, item) => {
+      return this.getData().reduce((result, item, index) => {
         return [
           ...result,
           this.getColumnList(true, true).map((c) => {
             const value = item[c.field];
-            return c.render ? c.render(value, item) : value;
+            return c.render ? c.render(value, item, index) : value;
           }),
         ];
       }, []);
@@ -270,12 +335,12 @@ export default {
         ["全部"]
       );
     },
-    headerRowHeight(){
-      if(this.dataLevel===1){
-        return 48
+    headerRowHeight() {
+      if (this.dataLevel === 1) {
+        return 48;
       }
-      return 24*(this.dataLevel-1)+36
-    }
+      return 24 * (this.dataLevel - 1) + 36;
+    },
   },
 };
 </script>
@@ -305,14 +370,13 @@ export default {
       background: #3b90f4;
       color: #fff;
       display: flex;
-
     }
   }
   &__fixed {
     &-left {
       overflow: hidden;
       .col {
-       border-right: 1px solid #eee !important;
+        border-right: 1px solid #eee !important;
       }
     }
     &-right {
@@ -323,7 +387,6 @@ export default {
   &__body {
     overflow-y: auto;
     .row {
-      height: 36px;
       &:nth-child(2n) {
         background: #f7f7f7;
       }
@@ -335,12 +398,12 @@ export default {
     background: #f7f7f7;
   }
 }
-.row{
+.row {
   height: 36px;
-  width:100%;
-  &>.col{
-    &:last-child{
-      border-right: 0
+  width: 100%;
+  & > .col {
+    &:last-child {
+      border-right: 0;
     }
   }
 }
@@ -353,11 +416,11 @@ export default {
   text-align: center;
   float: left;
   border-right: 1px solid #eee;
-  &__children-title{
+  &__children-title {
     display: block;
-    height:24px;
-    line-height:24px;
-    border-bottom:1px solid #eee;
+    height: 24px;
+    line-height: 24px;
+    border-bottom: 1px solid #eee;
   }
   & > * {
     margin: auto;

@@ -4,7 +4,7 @@
       title="营业区期交（季度&年度)"
       filter-field="BRANCH_NAME"
       @filter="onFilter"
-      :data-level='3'
+      :data-level="3"
       :body-height="320"
       :columns="columns"
       :data-source="dataSource"
@@ -27,45 +27,50 @@ export default {
       columns: [
         {
           title: "市场<br/>排名",
-          field: "SORT",
+          field: "BRANCH_NAME",
           fixed: true,
         },
         {
           title: "银行<br/>渠道",
-          field: "CHANNEL_NAME",
+          field: "BRANCH_CODE",
           fixed: true,
         },
         {
-          title: "<div class='table-col'>国寿</div><div class='table-col'>太平</div><div class='table-col'>渤海</div>",
-          field: "CHANNEL_NAME11",
-          fixed: true,
+          title: "个人期交",
+          field: "AREA_NAME",
+          render(text, record, index) {
+            if (index === 0) {
+              return `<div height='82'><div class='table-col'>国寿</div><div class='table-col'>太平</div><div class='table-col'>渤海</div></div>`;
+            }
+            return text;
+          },
         },
         {
-          title:'该渠道前三公司',
-          children:[
+          title: "该渠道前三公司",
+          children: [
             {
-              title:'公司名称',
-              field:"COMPANY_NAME"
+              title: "公司名称",
+              field: "AREA_CODE",
             },
             {
-              title:'月度期交',
-              field:'M_NEWORDER_PREMIUM'
+              title: "月度期交",
+              field: "DEPT_NAME",
             },
             {
-              title:'渠道份额',
-              filed:'M_NEWORDER_PREMIUM_C'
+              title: "渠道份额",
+              filed: "DEPT_CODE",
             },
-          ]
+          ],
         },
         {
-          title:'个人期交',
-          field:'M_NEWORDER_PREMIUM_XH'
-        }
+          title: "个人期交",
+          field: "DEPT_NAME",
+        },
       ],
       dataSource: data.body.result.map((item, index) => ({
-        ...item,
-        INDEX: index + 1,
-      })),
+          ...item,
+          INDEX: index + 1,
+        })),
       footerData: this.makeFooterData(), //首次计算好的合计
     };
   },
@@ -89,7 +94,7 @@ export default {
 };
 </script>
 
-<style lang='scss'>
+<style lang="scss">
 #app {
   font-family: Avenir, Helvetica, Arial, sans-serif;
   -webkit-font-smoothing: antialiased;
@@ -98,11 +103,11 @@ export default {
   color: #2c3e50;
   margin-top: 60px;
 }
-.table-col{
+.table-col {
   width: 71px;
-  line-height: 24px;
-  border-bottom: 1px solid #ccc;
-  &:last-child{
+  line-height: 27px;
+  border-bottom: 1px solid #eee;
+  &:last-child {
     border-bottom: 0;
   }
 }
