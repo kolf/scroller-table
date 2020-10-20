@@ -26,77 +26,41 @@ export default {
     return {
       columns: [
         {
-          title: "期交</br>排行",
-          field: "INDEX",
+          title: "市场<br/>排名",
+          field: "SORT",
           fixed: true,
         },
         {
-          title: "支公司",
-          field: "BRANCH_NAME",
+          title: "银行<br/>渠道",
+          field: "CHANNEL_NAME",
           fixed: true,
-          render(text, record) {
-            if (text === "一支") {
-              return `<i style='color:#f00'>${text}</i>`;
-            }
-            console.log(text, record, "record");
-            return text;
-          },
         },
         {
-          title: "营业区",
-          field: "AGENT_STATUS",
+          title: "<div class='table-col'>国寿</div><div class='table-col'>太平</div><div class='table-col'>渤海</div>",
+          field: "CHANNEL_NAME11",
+          fixed: true,
         },
         {
-          title: "月度承保",
-          field: "Y11111",
-          children: [
+          title:'该渠道前三公司',
+          children:[
             {
-              title: "月度</br>期交",
-              field: "D_UNDERWRITE_PREMIUM",
+              title:'公司名称',
+              field:"COMPANY_NAME"
             },
             {
-              title: "月度目标",
-              field: "M_UNDERWRITE_PREMIUM",
-              children: [{
-          title: "月度目标",
-          field: "M_UNDERWRITE_PREMIUM",
-        },
-        {
-          title: "月度达成",
-          field: "Q_UNDERWRITE_PREMIUM",
-        },]
-            },
-          ],
-        },
-        {
-          title: "月度环比",
-          field: "Y11112",
-          children: [
-            {
-              title: "月度</br>期交",
-              field: "Q_UNDERWRITE_PREMIUM",
+              title:'月度期交',
+              field:'M_NEWORDER_PREMIUM'
             },
             {
-              title: "月度目标",
-              field: "Y_UNDERWRITE_PREMIUM",
-            },      {
-          title: "月度</br>期交",
-          field: "D_UNDERWRITE_PREMIUM",
+              title:'渠道份额',
+              filed:'M_NEWORDER_PREMIUM_C'
+            },
+          ]
         },
         {
-          title: "月度目标",
-          field: "M_UNDERWRITE_PREMIUM",
-        },
-        {
-          title: "月度</br>达成",
-          field: "Q_UNDERWRITE_PREMIUM",
-        },
-          ],
-        },
-        {
-          title: "年度期交",
-          field: "Y_UNDERWRITE_PREMIUM",
-        },
+          title:'个人期交',
+          field:'M_NEWORDER_PREMIUM_XH'
+        }
       ],
       dataSource: data.body.result.map((item, index) => ({
         ...item,
@@ -125,7 +89,7 @@ export default {
 };
 </script>
 
-<style>
+<style lang='scss'>
 #app {
   font-family: Avenir, Helvetica, Arial, sans-serif;
   -webkit-font-smoothing: antialiased;
@@ -133,5 +97,13 @@ export default {
   text-align: center;
   color: #2c3e50;
   margin-top: 60px;
+}
+.table-col{
+  width: 71px;
+  line-height: 24px;
+  border-bottom: 1px solid #ccc;
+  &:last-child{
+    border-bottom: 0;
+  }
 }
 </style>

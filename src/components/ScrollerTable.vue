@@ -53,7 +53,7 @@
                   <template v-else>
                     <div>
                       <span v-html="item.title" class='col__children-title'/>
-                      <div class='row' :style="{height:dataLevel>1? headerRowHeight-24+'px': '36px' }"><p v-for='c in item.children' :key="c.field" class='col' :style="{width: (getChildList(c.children).length || 1)*71+1+'px'}">
+                      <div class='row' :style="{height:dataLevel>1? headerRowHeight-24+'px': '36px' }"><p v-for='c in item.children' :key="c.field" class='col' :style="{width: (getChildList(c.children).length || 1)*71+'px'}">
                         <template v-if='!c.children'>
                           <span v-html="c.title"/>
                           <i class="filter__button" v-if="filterField === c.field" />
