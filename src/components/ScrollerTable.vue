@@ -308,7 +308,7 @@ export default {
           ...result,
           this.getColumnList(false, true).map((c) => {
             const value = item[c.field];
-            return c.render ? c.render(value, item, index) : value;
+            return (c.render ? c.render(value, item, index) : value) || '-';
           }),
         ];
       }, []);
@@ -319,7 +319,7 @@ export default {
           ...result,
           this.getColumnList(true, true).map((c) => {
             const value = item[c.field];
-            return c.render ? c.render(value, item, index) : value;
+            return (c.render ? c.render(value, item, index) : value) || '-';
           }),
         ];
       }, []);
