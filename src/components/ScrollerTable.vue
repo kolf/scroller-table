@@ -1,6 +1,6 @@
 <template>
   <div class="table__root">
-    <div class="table__container">
+    <div class="table__container" :class="skin">
       <div class="table__header">
         <div class="table__title">{{ title }}</div>
         <div class="table__header-row">
@@ -125,9 +125,13 @@
           >
             <div
               v-for="(item, i) in fixedData"
+              @click="handleRowClick(i)"
               :key="i"
               class="row"
-              :style="{ height: getRowMaxHeight(autoData[i])+'px' }"
+              :style="{
+                height: getRowMaxHeight(autoData[i]) + 'px',
+                backgroundColor: clickedRowIndex === i ? '#ccc' : null,
+              }"
             >
               <p v-for="(f, j) in item" :key="j" class="col">
                 <span v-html="item[j]" />
@@ -147,9 +151,13 @@
               >
                 <div
                   v-for="(item, i) in autoData"
+                  @click="handleRowClick(i)"
                   :key="i"
                   class="row"
-                  :style="{ height: getRowMaxHeight(item)+'px' }"
+                  :style="{
+                    height: getRowMaxHeight(item) + 'px',
+                    backgroundColor: clickedRowIndex === i ? '#ccc' : null,
+                  }"
                 >
                   <p v-for="(f, j) in item" :key="j" class="col">
                     <span v-html="item[j]" />
@@ -202,6 +210,7 @@
       v-if="showFilterPiker"
       show-toolbar
       :columns="filterOptions"
+      :default-index="selectedIndex"
       @confirm="confirmFilterPiker"
       @cancel="hideFilterPiker"
       class="picker__root"
@@ -213,6 +222,7 @@
 export default {
   name: "ScrollerTable",
   props: {
+    skin: String,
     title: String,
     columns: Array,
     dataSource: Array,
@@ -227,14 +237,16 @@ export default {
     bodyHeight: {
       type: Number,
       default() {
-        return 400;
+        return 240;
       },
     },
   },
   data() {
     return {
-      filterValue: "",
+      filterValue: "全部",
       showFilterPiker: false,
+      selectedIndex: 0,
+      clickedRowIndex: -1,
     };
   },
   methods: {
@@ -278,6 +290,9 @@ export default {
       this.$refs.bodyRight.scrollLeft = scrollLeft;
       this.$refs.footerRight.scrollLeft = scrollLeft;
     },
+    handleRowClick(index) {
+      this.clickedRowIndex = this.clickedRowIndex === index ? -1 : index;
+    },
     onFilterPikerShow() {
       this.showFilterPiker = true;
     },
@@ -285,6 +300,10 @@ export default {
       this.showFilterPiker = false;
     },
     confirmFilterPiker(value) {
+      // this.selectedIndex = JSON.parse(JSON.stringify(this.filterOptions)).indexOf(value)
+      this.selectedIndex = JSON.parse(
+        JSON.stringify(this.filterOptions)
+      ).indexOf(value);
       this.filterValue = value;
       this.hideFilterPiker();
       this.$emit("filter", this.filterField, this.filterValue);
@@ -292,8 +311,8 @@ export default {
     getRowMaxHeight(data) {
       let max = 36;
       for (let item of data) {
-        console.log(item, "item");
-        const matchData = (item || "").match(/<div height='(\d+)/);
+        // console.log(item, "item");
+        const matchData = (item.toString() || "").match(/<div height='(\d+)/);
         if (matchData && matchData[1] > max) {
           max = matchData[1];
         }
@@ -308,7 +327,10 @@ export default {
           ...result,
           this.getColumnList(false, true).map((c) => {
             const value = item[c.field];
-            return (c.render ? c.render(value, item, index) : value) || '-';
+            if (value === 0) {
+              return value;
+            }
+            return (c.render ? c.render(value, item, index) : value) || "_";
           }),
         ];
       }, []);
@@ -319,7 +341,10 @@ export default {
           ...result,
           this.getColumnList(true, true).map((c) => {
             const value = item[c.field];
-            return (c.render ? c.render(value, item, index) : value) || '-';
+            if (value === 0) {
+              return value;
+            }
+            return (c.render ? c.render(value, item, index) : value) || "_";
           }),
         ];
       }, []);
@@ -362,12 +387,12 @@ export default {
   &__title {
     line-height: 36px;
     height: 36px;
-    background: #2378e1;
+    background: #f47c06;
     color: #fff;
   }
   &__header {
     &-row {
-      background: #3b90f4;
+      background: #fc932b;
       color: #fff;
       display: flex;
     }
@@ -386,16 +411,17 @@ export default {
   }
   &__body {
     overflow-y: auto;
+    -webkit-overflow-scrolling: touch;
     .row {
       &:nth-child(2n) {
-        background: #f7f7f7;
+        background: rgba(0, 0, 0, 0.03);
       }
     }
   }
   &__footer {
     height: 36px;
     display: flex;
-    background: #f7f7f7;
+    background: rgba(0, 0, 0, 0.1);
   }
 }
 .row {
@@ -425,13 +451,21 @@ export default {
   & > * {
     margin: auto;
     line-height: 1.2;
+    font-size: 14px;
+  }
+
+  & > span {
+    width: 100%;
+    display: inline-block;
   }
 }
 .picker {
   &__root {
     position: fixed;
     width: 100%;
+    left: 0;
     bottom: 0;
+    z-index: 100;
   }
 }
 .filter__button {
@@ -442,5 +476,13 @@ export default {
   border-color: transparent transparent #fff #fff;
   transform: rotate(-45deg);
   opacity: 0.8;
+}
+.blue {
+  .table__title {
+    background: #2378e1;
+  }
+  .table__header-row {
+    background: #3b90f4;
+  }
 }
 </style>
