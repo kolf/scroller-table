@@ -291,7 +291,7 @@ export default {
       this.$refs.footerRight.scrollLeft = scrollLeft;
     },
     handleRowClick(index) {
-      this.clickedRowIndex = this.clickedRowIndex === index ? -1 : index;
+      this.clickedRowIndex = index;
     },
     onFilterPikerShow() {
       this.showFilterPiker = true;
@@ -304,6 +304,7 @@ export default {
       this.selectedIndex = JSON.parse(
         JSON.stringify(this.filterOptions)
       ).indexOf(value);
+      this.clickedRowIndex = -1
       this.filterValue = value;
       this.hideFilterPiker();
       this.$emit("filter", this.filterField, this.filterValue);
